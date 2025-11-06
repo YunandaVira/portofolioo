@@ -994,10 +994,110 @@
             background: rgba(0, 0, 0, 0.3);
             opacity: 0;
             transition: opacity 0.3s ease;
+            pointer-events: none;
         }
         
         .project-card:hover .project-image::after {
             opacity: 1;
+        }
+        
+        /* Image Carousel Styles */
+        .image-carousel {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .carousel-track {
+            display: flex;
+            transition: transform 0.4s ease-in-out;
+            height: 100%;
+        }
+        
+        .carousel-slide {
+            min-width: 100%;
+            height: 100%;
+            position: relative;
+        }
+        
+        .carousel-slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .carousel-slide .placeholder-content {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--pink-soft), var(--pink-medium));
+        }
+        
+        .carousel-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: var(--pink-dark);
+            transition: all 0.3s ease;
+            z-index: 10;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        .carousel-btn:hover {
+            background: var(--pink-medium);
+            color: var(--white);
+            transform: translateY(-50%) scale(1.1);
+        }
+        
+        .carousel-btn.prev {
+            left: 10px;
+        }
+        
+        .carousel-btn.next {
+            right: 10px;
+        }
+        
+        .carousel-dots {
+            position: absolute;
+            bottom: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 8px;
+            z-index: 10;
+        }
+        
+        .carousel-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+        
+        .carousel-dot.active {
+            background: var(--white);
+            transform: scale(1.3);
+            border-color: var(--pink-medium);
+        }
+        
+        .carousel-dot:hover {
+            background: rgba(255, 255, 255, 0.8);
         }
         
         .project-info {
@@ -1607,32 +1707,31 @@
                         <span class="tag">JavaScript</span>
                     </div>
                     <div class="project-links">
-                        <a href="#" class="project-link" data-translate="btn-demo">Demo</a>
-                        <a href="#" class="project-link">GitHub</a>
+                        <a href="https://yunandavira.github.io/portofolioo/" class="project-link" data-translate="btn-demo">Demo</a>
+                        <a href="https://github.com/YunandaVira/portofolioo" class="project-link">GitHub</a>
                     </div>
                 </div>
             </div>
 
             <!-- Project Card 3 -->
             <div class="project-card fade-in">
-                <div class="project-image">
-                    <span data-translate="project3-img">📱 Screenshot Proyek 3</span>
-                    <br><small data-translate="add-image">(Tambahkan gambar Anda)</small>
+                <div class="project-image" style="background: none; height: 250px; overflow: hidden;">
+        <img src="foto11.jpg" alt="Project 3" style="width: 100%; height: 100%; object-fit: cover;">
                 </div>
                 <div class="project-info">
-                    <h3 data-translate="project3-title">Mobile App Landing Page</h3>
+                    <h3 data-translate="project3-title">Map Roblox- Mt. Olohok</h3>
                     <p data-translate="project3-desc">
-                        Landing page yang menarik untuk aplikasi mobile dengan 
-                        fokus pada konversi dan user engagement.
+                        Map Roblox bertema perjalanan pegunungan, di mana pemain mendaki dari base hingga puncak sambil melewati berbagai rintangan. 
+    Dengan script LUA, saya menambahkan fitur seperti panel admin, sistem peringkat, donasi, aura, gendong pemain, reset, dan efek kehilangan darah saat jatuh.
                     </p>
                     <div class="project-tags">
-                        <span class="tag">UI/UX</span>
-                        <span class="tag">Figma</span>
-                        <span class="tag">Responsive</span>
+                        <span class="tag">Roblox Studio</span>
+                        <span class="tag">Game Design</span>
+                        <span class="tag">LUA Scripting</span>
                     </div>
                     <div class="project-links">
-                        <a href="#" class="project-link" data-translate="btn-demo">Demo</a>
-                        <a href="#" class="project-link">GitHub</a>
+                        <a href="https://www.roblox.com/id/games/95071054045286/MT-OLOHOK" class="project-link"data-translate="btn-play">Play Game</a>
+
                     </div>
                 </div>
             </div>
@@ -1783,9 +1882,10 @@ const translations = {
         'project1-desc': 'Platform e-commerce modern dengan fitur keranjang belanja, payment gateway, dan dashboard admin yang lengkap.',
         'project2-title': 'Portfolio Website',
         'project2-desc': 'Website portofolio yang elegan dan responsif untuk menampilkan karya-karya kreatif dengan animasi yang halus. Situs yang sedang kamu kunjungi ini merupakan hasil rancangan dan pengembangan saya sendiri.',
-        'project3-title': 'Mobile App Landing Page',
-        'project3-desc': 'Landing page yang menarik untuk aplikasi mobile dengan fokus pada konversi dan user engagement.',
+        'project3-title': 'Map Roblox - Mt.Olohok',
+        'project3-desc': 'Map Roblox bertema perjalanan pegunungan, di mana pemain mendaki dari base hingga puncak sambil melewati berbagai rintangan. Dengan script LUA, saya menambahkan fitur seperti panel admin, sistem peringkat, donasi, aura, gendong pemain, reset, dan efek kehilangan darah saat jatuh.',
         'btn-demo': 'Demo',
+        'btn-play' : 'Play',
         
         // Contact Section
         'contact-title': 'Hubungi Saya',
@@ -1847,10 +1947,11 @@ const translations = {
         'project1-desc': 'A modern e-commerce platform featuring a shopping cart, payment gateway, and a comprehensive admin dashboard.',
         'project2-title': 'Portfolio Website',
         'project2-desc': 'An elegant and responsive portfolio website designed to showcase creative works with smooth animations. The site you’re currently visiting was fully designed and developed by me.',
-        'project3-title': 'Mobile App Landing Page',
-        'project3-desc': 'An attractive landing page for mobile applications focusing on conversions and user engagement.',
+        'project3-title': 'Roblox Map - Mt.Olohok',
+        'project3-desc': ' A Roblox map themed around a mountain journey, where players climb from the base to the peak while overcoming various challenges. Using LUA scripts, I developed features such as an admin panel, ranking system, donation system, aura effects, player carry, reset, and fall damage mechanics.',
         'btn-demo': 'Demo',
-        
+        'btn-play' : 'play',
+
         // Contact Section
         'contact-title': 'Contact Me',
         'contact-subtitle': 'Let\'s collaborate to bring your project to life',
