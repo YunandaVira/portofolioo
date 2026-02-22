@@ -815,36 +815,77 @@
             padding: 2rem;
         }
         
-        .image-placeholder {
-            width: 100%;
-            height: 400px;
-            background: linear-gradient(135deg, var(--pink-soft), var(--pink-medium));
-            border-radius: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.2rem;
-            color: var(--white);
-            box-shadow: 0 20px 60px rgba(255, 182, 193, 0.3);
-            transition: all 0.3s ease;
-            overflow: hidden;
-            position: relative;
-        }
-        
-        .image-placeholder img {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            border-radius: 20px;
-        }
-        
-        .image-placeholder:hover {
-            transform: scale(1.02);
-            box-shadow: 0 25px 70px rgba(255, 182, 193, 0.4);
-        }
+     .image-placeholder {
+    width: 100%;
+    height: 400px;
+    border-radius: 20px;
+    overflow: hidden;
+    position: relative;
+    transform-style: preserve-3d;
+    transform: perspective(1200px) rotateX(0deg) rotateY(0deg);
+    /* Transition lebih smooth & natural */
+    transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1), box-shadow 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+    box-shadow: 0 20px 60px rgba(255, 182, 193, 0.3);
+    cursor: pointer;
+    will-change: transform;
+}
+
+.image-placeholder img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 20px;
+    display: block;
+}
+
+/* Hologram rainbow layer */
+.holo-shine {
+    position: absolute;
+    inset: 0;
+    border-radius: 20px;
+    opacity: 0;
+    pointer-events: none;
+    z-index: 3;
+    transition: opacity 0.4s ease;
+    mix-blend-mode: screen;
+    background: 
+        repeating-linear-gradient(
+            0deg,
+            rgba(255, 0, 128, 0.03) 0px,
+            rgba(255, 200, 0, 0.03) 2px,
+            rgba(0, 255, 200, 0.03) 4px,
+            rgba(100, 100, 255, 0.03) 6px
+        ),
+        radial-gradient(circle at 50% 50%, rgba(255,255,255,0) 0%, transparent 80%);
+}
+
+.image-placeholder:hover .holo-shine {
+    opacity: 1;
+}
+
+/* Gloss top highlight */
+.holo-gloss {
+    position: absolute;
+    inset: 0;
+    border-radius: 20px;
+    pointer-events: none;
+    z-index: 4;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    background: linear-gradient(
+        135deg,
+        rgba(255,255,255,0.15) 0%,
+        transparent 50%,
+        rgba(255,255,255,0.05) 100%
+    );
+}
+
+.image-placeholder:hover .holo-gloss {
+    opacity: 1;
+}
         
         /* ========== PROYEK SECTION ========== */
         #proyek {
@@ -878,7 +919,908 @@
             border-radius: 50%;
             animation: float 12s ease-in-out infinite reverse;
         }
-        
+      
+/* ========== SERTIFIKAT SECTION ========== */
+#sertifikat {
+    background:
+        radial-gradient(ellipse at 15% 40%, rgba(255, 182, 193, 0.12) 0%, transparent 55%),
+        radial-gradient(ellipse at 85% 20%, rgba(255, 209, 220, 0.15) 0%, transparent 55%),
+        radial-gradient(ellipse at 50% 80%, rgba(255, 154, 181, 0.1) 0%, transparent 50%),
+        linear-gradient(180deg, var(--white) 0%, #fff5f8 40%, #fff0f5 60%, var(--white) 100%);
+    position: relative;
+    overflow: hidden;
+    padding: 100px 5%;
+    max-width: 100%;
+    margin: 0;
+}
+
+/* Animated ribbon banner effect top */
+#sertifikat::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 300%;
+    height: 4px;
+    background: linear-gradient(90deg,
+        transparent 0%,
+        var(--pink-soft) 15%,
+        var(--pink-medium) 30%,
+        var(--pink-dark) 50%,
+        var(--pink-medium) 70%,
+        var(--pink-soft) 85%,
+        transparent 100%);
+    animation: ribbonSlide 6s linear infinite;
+}
+
+@keyframes ribbonSlide {
+    0% { transform: translateX(-100px); }
+    100% { transform: translateX(300px); }
+}
+
+/* Bottom ribbon */
+#sertifikat::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: -100%;
+    width: 300%;
+    height: 3px;
+    background: linear-gradient(90deg,
+        transparent 0%,
+        var(--pink-soft) 20%,
+        var(--pink-dark) 50%,
+        var(--pink-soft) 80%,
+        transparent 100%);
+    animation: ribbonSlide 8s linear infinite reverse;
+}
+
+/* ===== FLOATING MEDALS & RIBBONS (unik, beda dari section lain) ===== */
+.floating-medals {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* Setiap item tergantung dari atas seperti medali */
+.medal-item {
+    position: absolute;
+    top: -10px;
+    transform-origin: top center;
+    animation: medalSwing 5s ease-in-out infinite;
+    opacity: 0.55;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0px;
+}
+
+/* Tali/pita tipis di atas medali */
+.medal-item::before {
+    content: '';
+    display: block;
+    width: 2px;
+    height: 22px;
+    background: linear-gradient(to bottom, rgba(255,154,181,0.6), rgba(255,182,193,0.3));
+    border-radius: 2px;
+    margin-bottom: 1px;
+}
+
+.medal-item span {
+    display: block;
+    font-size: inherit;
+    filter: drop-shadow(0 3px 6px rgba(255, 154, 181, 0.4));
+    transition: filter 0.3s;
+}
+
+/* Posisi & ukuran tiap medali */
+.medal-item:nth-child(1)  { left: 4%;  font-size: 22px; animation-delay: 0s;    animation-duration: 4.5s; }
+.medal-item:nth-child(2)  { left: 14%; font-size: 17px; animation-delay: 0.7s;  animation-duration: 5.2s; }
+.medal-item:nth-child(3)  { left: 25%; font-size: 25px; animation-delay: 1.4s;  animation-duration: 4.8s; }
+.medal-item:nth-child(4)  { left: 36%; font-size: 19px; animation-delay: 0.3s;  animation-duration: 6s;   }
+.medal-item:nth-child(5)  { left: 48%; font-size: 23px; animation-delay: 2s;    animation-duration: 5s;   }
+.medal-item:nth-child(6)  { left: 59%; font-size: 18px; animation-delay: 1s;    animation-duration: 4.6s; }
+.medal-item:nth-child(7)  { left: 70%; font-size: 26px; animation-delay: 1.8s;  animation-duration: 5.4s; }
+.medal-item:nth-child(8)  { left: 80%; font-size: 20px; animation-delay: 0.5s;  animation-duration: 4.9s; }
+.medal-item:nth-child(9)  { left: 89%; font-size: 16px; animation-delay: 2.5s;  animation-duration: 5.7s; }
+.medal-item:nth-child(10) { left: 95%; font-size: 21px; animation-delay: 1.2s;  animation-duration: 4.3s; }
+
+/* Animasi swing pendulum — beda dari float/twinkle section lain */
+@keyframes medalSwing {
+    0%   { transform: rotate(-14deg); }
+    25%  { transform: rotate(10deg); }
+    50%  { transform: rotate(-8deg); }
+    75%  { transform: rotate(12deg); }
+    100% { transform: rotate(-14deg); }
+}
+
+/* Beberapa item swing berlawanan arah untuk variasi */
+.medal-item:nth-child(even) {
+    animation-name: medalSwingReverse;
+}
+
+@keyframes medalSwingReverse {
+    0%   { transform: rotate(14deg); }
+    25%  { transform: rotate(-10deg); }
+    50%  { transform: rotate(8deg); }
+    75%  { transform: rotate(-12deg); }
+    100% { transform: rotate(14deg); }
+}
+
+/* Orbs decoratif */
+.cert-orb {
+    position: absolute;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.cert-orb-1 {
+    width: 350px;
+    height: 350px;
+    top: -100px;
+    right: -80px;
+    background: radial-gradient(circle, rgba(255, 182, 193, 0.18), transparent 70%);
+    animation: orbFloat 12s ease-in-out infinite;
+}
+
+.cert-orb-2 {
+    width: 280px;
+    height: 280px;
+    bottom: -60px;
+    left: -60px;
+    background: radial-gradient(circle, rgba(255, 209, 220, 0.2), transparent 70%);
+    animation: orbFloat 15s ease-in-out infinite reverse;
+}
+
+.cert-orb-3 {
+    width: 200px;
+    height: 200px;
+    top: 40%;
+    left: 45%;
+    background: radial-gradient(circle, rgba(255, 154, 181, 0.1), transparent 70%);
+    animation: orbFloat 10s ease-in-out infinite;
+    animation-delay: 3s;
+}
+
+@keyframes orbFloat {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    33% { transform: translate(20px, -25px) scale(1.08); }
+    66% { transform: translate(-15px, 15px) scale(0.94); }
+}
+
+/* Section content */
+.sertifikat-content-wrap {
+    position: relative;
+    z-index: 1;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+/* Filter tabs */
+.cert-filter {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 3rem;
+    flex-wrap: wrap;
+}
+
+.cert-filter-btn {
+    padding: 10px 28px;
+    border: 2px solid var(--pink-medium);
+    background: transparent;
+    color: var(--pink-dark);
+    border-radius: 30px;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.cert-filter-btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, var(--pink-dark), var(--pink-medium));
+    opacity: 0;
+    transition: opacity 0.35s ease;
+    z-index: -1;
+}
+
+.cert-filter-btn:hover,
+.cert-filter-btn.active {
+    color: var(--white);
+    border-color: var(--pink-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(255, 154, 181, 0.3);
+}
+
+.cert-filter-btn:hover::before,
+.cert-filter-btn.active::before {
+    opacity: 1;
+}
+
+/* Certificate grid */
+.certificates-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2rem;
+}
+
+/* Certificate card */
+.cert-card {
+    background: var(--white);
+    border-radius: 22px;
+    overflow: hidden;
+    box-shadow:
+        0 4px 20px rgba(255, 182, 193, 0.12),
+        0 1px 6px rgba(0,0,0,0.04);
+    transition: all 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+    position: relative;
+    border: 1.5px solid rgba(255, 182, 193, 0.2);
+    cursor: pointer;
+}
+
+.cert-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg,
+        rgba(255, 209, 220, 0.08) 0%,
+        rgba(255, 182, 193, 0.12) 50%,
+        rgba(255, 154, 181, 0.06) 100%);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    pointer-events: none;
+    z-index: 1;
+    border-radius: 22px;
+}
+
+.cert-card:hover {
+    transform: translateY(-12px) scale(1.02);
+    box-shadow:
+        0 20px 50px rgba(255, 154, 181, 0.25),
+        0 8px 25px rgba(255, 182, 193, 0.15);
+    border-color: rgba(255, 154, 181, 0.4);
+}
+
+.cert-card:hover::before {
+    opacity: 1;
+}
+
+/* Cert image thumbnail area */
+.cert-thumbnail {
+    position: relative;
+    width: 100%;
+    height: 200px;
+    overflow: hidden;
+    background: linear-gradient(135deg, var(--pink-soft) 0%, var(--pink-medium) 60%, var(--pink-dark) 100%);
+}
+
+.cert-thumbnail img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.cert-card:hover .cert-thumbnail img {
+    transform: scale(1.07);
+}
+
+/* Thumbnail overlay on hover with eye icon */
+.cert-thumbnail-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(255, 154, 181, 0.55);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.35s ease;
+    backdrop-filter: blur(3px);
+}
+
+.cert-card:hover .cert-thumbnail-overlay {
+    opacity: 1;
+}
+
+.cert-view-icon {
+    font-size: 2.5rem;
+    transform: scale(0.6);
+    transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+    filter: drop-shadow(0 4px 10px rgba(0,0,0,0.2));
+}
+
+.cert-card:hover .cert-view-icon {
+    transform: scale(1);
+}
+
+/* Placeholder thumbnail (saat tidak ada gambar) */
+.cert-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.8rem;
+}
+
+.cert-placeholder-icon {
+    font-size: 3.5rem;
+    filter: drop-shadow(0 4px 8px rgba(255, 154, 181, 0.3));
+    animation: iconBob 3s ease-in-out infinite;
+}
+
+@keyframes iconBob {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-6px); }
+}
+
+.cert-placeholder-text {
+    font-size: 0.85rem;
+    color: rgba(255,255,255,0.85);
+    font-weight: 500;
+    letter-spacing: 0.5px;
+}
+
+/* Badge/ribbon pada card */
+.cert-badge {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    background: linear-gradient(135deg, var(--pink-dark), #ff7aab);
+    color: var(--white);
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 5px 14px;
+    border-radius: 20px;
+    box-shadow: 0 3px 10px rgba(255, 154, 181, 0.4);
+    z-index: 2;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+/* Card body */
+.cert-body {
+    padding: 1.6rem 1.8rem 1.8rem;
+    position: relative;
+    z-index: 2;
+}
+
+/* Decorative top border on body */
+.cert-body::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 1.8rem;
+    right: 1.8rem;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--pink-medium), transparent);
+}
+
+.cert-issuer {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.6rem;
+}
+
+.cert-issuer-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--pink-dark), var(--pink-medium));
+    flex-shrink: 0;
+}
+
+.cert-issuer-name {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--pink-dark);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+}
+
+.cert-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.25rem;
+    color: var(--black);
+    margin-bottom: 0.8rem;
+    line-height: 1.35;
+    transition: color 0.3s ease;
+}
+
+.cert-card:hover .cert-title {
+    color: var(--pink-dark);
+}
+
+.cert-meta {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.2rem;
+    flex-wrap: wrap;
+}
+
+.cert-meta-item {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.82rem;
+    color: var(--gray-dark);
+}
+
+.cert-meta-icon {
+    font-size: 0.95rem;
+}
+
+/* Skills tags on cert */
+.cert-skills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-bottom: 1.4rem;
+}
+
+.cert-skill-tag {
+    background: linear-gradient(135deg, var(--pink-soft), rgba(255, 182, 193, 0.5));
+    color: var(--pink-dark);
+    font-size: 0.76rem;
+    font-weight: 600;
+    padding: 4px 12px;
+    border-radius: 20px;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(255, 154, 181, 0.2);
+}
+
+.cert-skill-tag:hover {
+    background: linear-gradient(135deg, var(--pink-dark), var(--pink-medium));
+    color: var(--white);
+    transform: translateY(-2px);
+}
+
+/* CTA button on card */
+.cert-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 9px 22px;
+    border: 2px solid var(--pink-medium);
+    color: var(--pink-dark);
+    text-decoration: none;
+    border-radius: 25px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.cert-link::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, var(--pink-dark), var(--pink-medium));
+    opacity: 0;
+    transition: opacity 0.35s ease;
+    z-index: -1;
+}
+
+.cert-link:hover {
+    color: var(--white);
+    border-color: var(--pink-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(255, 154, 181, 0.35);
+}
+
+.cert-link:hover::before {
+    opacity: 1;
+}
+
+.cert-link-arrow {
+    transition: transform 0.3s ease;
+    font-size: 0.9rem;
+}
+
+.cert-link:hover .cert-link-arrow {
+    transform: translateX(4px);
+}
+
+/* Download button icon */
+.cert-dl-icon {
+    font-size: 1rem;
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    display: inline-block;
+}
+
+.cert-download-btn:hover .cert-dl-icon {
+    transform: translateY(3px) scale(1.15);
+}
+
+/* Stats banner */
+.cert-stats {
+    display: flex;
+    justify-content: center;
+    gap: 3rem;
+    margin: 0 auto 4rem;
+    flex-wrap: wrap;
+}
+
+.cert-stat {
+    text-align: center;
+    padding: 1.5rem 2.5rem;
+    background: var(--white);
+    border-radius: 20px;
+    box-shadow: 0 6px 25px rgba(255, 182, 193, 0.18);
+    border: 1.5px solid rgba(255, 182, 193, 0.25);
+    transition: all 0.35s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.cert-stat::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--pink-dark), var(--pink-soft));
+    transform: scaleX(0);
+    transition: transform 0.4s ease;
+}
+
+.cert-stat:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 35px rgba(255, 154, 181, 0.25);
+}
+
+.cert-stat:hover::before {
+    transform: scaleX(1);
+}
+
+.cert-stat-number {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.8rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--pink-dark), var(--pink-medium));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1;
+    margin-bottom: 0.4rem;
+    display: block;
+}
+
+.cert-stat-label {
+    font-size: 0.88rem;
+    color: var(--gray-dark);
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+/* Lightbox modal */
+.cert-lightbox {
+    position: fixed;
+    inset: 0;
+    background: rgba(44, 44, 44, 0.75);
+    backdrop-filter: blur(12px);
+    z-index: 99999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.35s ease;
+}
+
+.cert-lightbox.active {
+    opacity: 1;
+    pointer-events: all;
+}
+
+.cert-lightbox-inner {
+    background: var(--white);
+    border-radius: 24px;
+    max-width: 800px;
+    width: 100%;
+    max-height: 90vh;
+    overflow: hidden;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.25);
+    transform: scale(0.85) translateY(20px);
+    transition: transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+    display: flex;
+    flex-direction: column;
+}
+
+.cert-lightbox.active .cert-lightbox-inner {
+    transform: scale(1) translateY(0);
+}
+
+.cert-lightbox-img {
+    width: 100%;
+    max-height: 55vh;
+    object-fit: contain;
+    background: linear-gradient(135deg, #ffeef4, var(--pink-soft));
+    padding: 1.5rem;
+}
+
+.cert-lightbox-body {
+    padding: 2rem 2.5rem 2.5rem;
+    overflow-y: auto;
+}
+
+.cert-lightbox-close {
+    position: absolute;
+    top: 1.2rem;
+    right: 1.2rem;
+    background: linear-gradient(135deg, var(--pink-dark), var(--pink-medium));
+    border: none;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    color: var(--white);
+    font-size: 1.3rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(255, 154, 181, 0.4);
+    z-index: 100000;
+}
+
+.cert-lightbox-close:hover {
+    transform: rotate(90deg) scale(1.1);
+    box-shadow: 0 6px 20px rgba(255, 154, 181, 0.5);
+}
+
+/* ===== SLIDESHOW PER CARD ===== */
+.slideshow-track {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.slide-img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    transition: opacity 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+    border-radius: 0;
+    will-change: opacity;
+}
+
+.slide-img.active {
+    opacity: 1;
+}
+
+/* Dots indicator slide */
+.slide-dots {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 6px;
+    z-index: 5;
+}
+
+.slide-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.5);
+    border: 1.5px solid rgba(255,255,255,0.8);
+    transition: all 0.35s ease;
+    cursor: pointer;
+}
+
+.slide-dot.active {
+    background: var(--white);
+    transform: scale(1.35);
+    box-shadow: 0 0 6px rgba(255,154,181,0.6);
+}
+
+/* Progress bar tipis di bawah gambar (timer visual) */
+.slide-progress {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 3px;
+    width: 0%;
+    background: linear-gradient(90deg, var(--pink-dark), var(--pink-soft));
+    z-index: 6;
+    border-radius: 0 3px 3px 0;
+    transition: none;
+}
+
+.slide-progress.running {
+    transition: width 2s linear;
+    width: 100%;
+}
+
+/* Overlay klik foto */
+.cert-view-label {
+    color: var(--white);
+    font-size: 0.82rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    margin-top: 0.3rem;
+    opacity: 0;
+    transform: translateY(5px);
+    transition: all 0.3s ease;
+    display: block;
+    text-align: center;
+}
+
+.cert-thumbnail-overlay {
+    flex-direction: column;
+    gap: 0.2rem;
+}
+
+.cert-card:hover .cert-view-label {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* ===== PHOTO LIGHTBOX (Foto Sertifikat) ===== */
+.photo-lightbox {
+    position: fixed;
+    inset: 0;
+    background: rgba(20, 10, 15, 0.88);
+    backdrop-filter: blur(16px);
+    z-index: 199999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.photo-lightbox.active {
+    opacity: 1;
+    pointer-events: all;
+}
+
+.photo-lightbox-inner {
+    position: relative;
+    max-width: 90vw;
+    max-height: 90vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.photo-lightbox-img {
+    max-width: 82vw;
+    max-height: 85vh;
+    object-fit: contain;
+    border-radius: 16px;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.5), 0 0 0 1.5px rgba(255,182,193,0.2);
+    transform: scale(0.88);
+    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    display: block;
+}
+
+.photo-lightbox.active .photo-lightbox-img {
+    transform: scale(1);
+}
+
+/* Tombol close */
+.photo-lb-close {
+    position: fixed;
+    top: 1.2rem;
+    right: 1.2rem;
+    background: linear-gradient(135deg, var(--pink-dark), var(--pink-medium));
+    border: none;
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    color: var(--white);
+    font-size: 1.3rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(255,154,181,0.4);
+    z-index: 200001;
+}
+
+.photo-lb-close:hover {
+    transform: rotate(90deg) scale(1.1);
+}
+
+/* Nav prev/next foto */
+.photo-lb-nav {
+    position: fixed;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255,255,255,0.12);
+    border: 1.5px solid rgba(255,255,255,0.2);
+    backdrop-filter: blur(8px);
+    color: var(--white);
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    font-size: 1.4rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    z-index: 200001;
+}
+
+.photo-lb-nav:hover {
+    background: rgba(255,154,181,0.4);
+    border-color: var(--pink-medium);
+    transform: translateY(-50%) scale(1.1);
+}
+
+.photo-lb-prev { left: 1.2rem; }
+.photo-lb-next { right: 1.2rem; }
+
+/* Counter foto (1/3) */
+.photo-lb-counter {
+    position: fixed;
+    bottom: 1.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(255,255,255,0.12);
+    backdrop-filter: blur(8px);
+    color: var(--white);
+    padding: 6px 18px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    border: 1px solid rgba(255,255,255,0.2);
+    z-index: 200001;
+    letter-spacing: 1px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .cert-stats {
+        gap: 1.5rem;
+    }
+    .cert-stat {
+        padding: 1.2rem 1.8rem;
+    }
+    .cert-stat-number {
+        font-size: 2.2rem;
+    }
+    .certificates-grid {
+        grid-template-columns: 1fr;
+    }
+    .cert-filter {
+        gap: 0.6rem;
+    }
+    .cert-filter-btn {
+        padding: 8px 18px;
+        font-size: 0.82rem;
+    }
+}
+
         /* Floating sparkles */
         .floating-sparkles {
             position: absolute;
@@ -899,11 +1841,11 @@
         
         .sparkle:nth-child(1) { left: 15%; top: 20%; animation-delay: 0s; font-size: 24px; }
         .sparkle:nth-child(2) { left: 35%; top: 40%; animation-delay: 1.5s; font-size: 18px; }
-        .sparkle:nth-child(3) { left: 55%; top: 15%; animation-delay: 3s; font-size: 20px; }
-        .sparkle:nth-child(4) { left: 75%; top: 50%; animation-delay: 4.5s; font-size: 22px; }
+        .sparkle:nth-child(3) { left: 55%; top: 15%; animation-delay: 2s; font-size: 20px; }
+        .sparkle:nth-child(4) { left: 75%; top: 50%; animation-delay: 1.5s; font-size: 22px; }
         .sparkle:nth-child(5) { left: 85%; top: 30%; animation-delay: 2s; font-size: 16px; }
-        .sparkle:nth-child(6) { left: 25%; top: 60%; animation-delay: 5s; font-size: 19px; }
-        .sparkle:nth-child(7) { left: 65%; top: 70%; animation-delay: 3.5s; font-size: 21px; }
+        .sparkle:nth-child(6) { left: 25%; top: 60%; animation-delay: 2s; font-size: 19px; }
+        .sparkle:nth-child(7) { left: 65%; top: 70%; animation-delay: 1.5s; font-size: 21px; }
         
         @keyframes sparkleFloat {
             0%, 100% {
@@ -1551,6 +2493,7 @@
                 <li><a href="#home" data-translate="nav-home">Home</a></li>
                 <li><a href="#tentang" data-translate="nav-about">Tentang Saya</a></li>
                 <li><a href="#proyek" data-translate="nav-projects">Proyek</a></li>
+                <li><a href="#sertifikat" data-translate="nav-certificates">Sertifikat</a></li>
                 <li><a href="#kontak" data-translate="nav-contact">Kontak</a></li>
             </ul>
             <div class="language-switcher" id="languageSwitcher">
@@ -1643,10 +2586,12 @@
             </div>
             
             <div class="about-image fade-in">
-                <div class="image-placeholder">
-                    <img src="foto.png" alt="Profile Photo" style="width: 100%; height: 100%; object-fit: cover; border-radius: 20px;">
-                </div>
-            </div>
+    <div class="image-placeholder" id="photoCard">
+        <img src="foto.jpeg" alt="Profile Photo">
+        <div class="holo-shine" id="holoShine"></div>
+        <div class="holo-gloss" id="holoGloss"></div>
+    </div>
+</div>
         </div>
     </section>
 
@@ -1761,6 +2706,464 @@
         </div>
     </section>
 
+    
+    
+<!-- ========== SERTIFIKAT SECTION ========== -->
+<section id="sertifikat" style="max-width:100%; padding:100px 5%;">
+    <!-- Dekorasi medali tergantung (pendulum swing) — unik, beda dari section lain -->
+    <div class="floating-medals">
+        <div class="medal-item"><span>🏅</span></div>
+        <div class="medal-item"><span>🎖️</span></div>
+        <div class="medal-item"><span>🎗️</span></div>
+        <div class="medal-item"><span>🏅</span></div>
+        <div class="medal-item"><span>🎖️</span></div>
+        <div class="medal-item"><span>🎗️</span></div>
+        <div class="medal-item"><span>🏅</span></div>
+        <div class="medal-item"><span>🎖️</span></div>
+        <div class="medal-item"><span>🎗️</span></div>
+        <div class="medal-item"><span>🏅</span></div>
+    </div>
+
+    <!-- Orbs decoratif -->
+    <div class="cert-orb cert-orb-1"></div>
+    <div class="cert-orb cert-orb-2"></div>
+    <div class="cert-orb cert-orb-3"></div>
+
+    <div class="sertifikat-content-wrap">
+        <!-- Title -->
+        <h2 class="section-title fade-in" data-translate="cert-title">Sertifikat</h2>
+        <p class="section-subtitle fade-in" data-translate="cert-subtitle">Pencapaian & Penghargaan yang Saya Raih</p>
+
+        <!-- Stats -->
+        <div class="cert-stats fade-in">
+            <div class="cert-stat">
+                <span class="cert-stat-number" id="certCount">7</span>
+                <span class="cert-stat-label" data-translate="cert-stat-total">Total Sertifikat</span>
+            </div>
+            <div class="cert-stat">
+                <span class="cert-stat-number">6</span>
+                <span class="cert-stat-label" data-translate="cert-stat-platform">Platform</span>
+            </div>
+            <div class="cert-stat">
+                <span class="cert-stat-number">2026</span>
+                <span class="cert-stat-label" data-translate="cert-stat-year">Tahun Terkini</span>
+            </div>
+        </div>
+
+        <!-- Filter tabs -->
+        <div class="cert-filter fade-in">
+            <button class="cert-filter-btn active" data-filter="all" data-translate="cert-filter-all">Semua</button>
+            <button class="cert-filter-btn" data-filter="web" data-translate="cert-filter-web">Web Development</button>
+            <button class="cert-filter-btn" data-filter="data" data-translate="cert-filter-design">Data Analysis</button>
+            <button class="cert-filter-btn" data-filter="lainnya" data-translate="cert-filter-other">Lainnya</button>
+        </div>
+
+        <!-- Certificates Grid -->
+        <div class="certificates-grid">
+
+            <!-- ===== CERT CARD 1 ===== -->
+            <div class="cert-card fade-in" data-category="data"
+                 data-title="Python Data Analysis Bootcamp - Pandas, Seaborn and Plotly"
+                 data-issuer="Udemy"
+                 data-date="2026"
+                 data-images='["sertifikat1a.jpeg","sertifikat1b.jpg","sertifikat1c.png"]'
+                 data-pdf="sertifikat1.pdf"
+                 data-desc="Dalam seminar tersebut dijelaskan bahwa profesi data analyst sangat dibutuhkan karena mampu membantu perusahaan mengambil keputusan berbasis data.
+                    Materi yang dibahas meliputi penggunaan Python sebagai tools utama analisis data, terutama library seperti Pandas untuk pengolahan data, serta Seaborn dan Plotly untuk visualisasi. Saya juga mempelajari pentingnya data cleaning, exploratory data analysis (EDA), serta bagaimana menyajikan hasil analisis melalui data storytelling agar mudah dipahami oleh pihak bisnis.
+                    Selain itu, seminar ini menekankan bahwa analisis data bukan hanya tentang menggunakan tools, tetapi juga memahami kapan dan mengapa metode tertentu digunakan. Dibahas juga dasar hypothesis testing serta pentingnya pendekatan data-driven dalam menyelesaikan masalah.
+                    Dari seminar ini, saya mendapatkan pemahaman bahwa menjadi data analyst tidak hanya membutuhkan kemampuan teknis, tetapi juga kemampuan berpikir kritis dan komunikasi yang baik.">
+                <div class="cert-thumbnail cert-slideshow">
+                    <!-- Slideshow otomatis: ganti tiap 2 detik, klik untuk lihat foto -->
+                    <div class="slideshow-track">
+                        <img class="slide-img active" src="sertifikat1a.png" alt="Certificate 1-1">
+                        <img class="slide-img" src="sertifikat1b.png" alt="Certificate 1-2">
+                        <img class="slide-img" src="sertifikat1c.png" alt="Certificate 1-3">
+                    </div>
+                    <div class="cert-placeholder" style="display:none;">
+                        <div class="cert-placeholder-icon">📜</div>
+                        <div class="cert-placeholder-text">Data Analysis</div>
+                    </div>
+                    <div class="slide-dots"></div>
+                    <div class="cert-thumbnail-overlay">
+                        <span class="cert-view-icon">🔍</span>
+                        <span class="cert-view-label" data-translate="cert-photo-view">Lihat Foto</span>
+                    </div>
+                </div>
+                <span class="cert-badge">2026</span>
+                <div class="cert-body">
+                    <div class="cert-issuer">
+                        <div class="cert-issuer-dot"></div>
+                        <span class="cert-issuer-name">Udemy</span>
+                    </div>
+                    <h3 class="cert-title">Python Data Analysis Bootcamp - Pandas, Seaborn and Plotly</h3>
+                    <div class="cert-meta">
+                        <div class="cert-meta-item">
+                            <span class="cert-meta-icon">📅</span>
+                            <span>5 Feb 2026</span>
+                        </div>
+                        <div class="cert-meta-item">
+                            <span class="cert-meta-icon">🏅</span>
+                            <span data-translate="cert-verified">Terverifikasi</span>
+                        </div>
+                        <div class="cert-meta-item">
+                            <span class="cert-meta-icon">👥</span>
+                            <span>Brandyn Ewanek</span>
+                        </div>
+                    </div>
+                    <div class="cert-skills">
+                        <span class="cert-skill-tag">Python</span>
+                        <span class="cert-skill-tag">Padas</span>
+                        <span class="cert-skill-tag">EDA</span>
+                        <span class="cert-skill-tag">Plotly</span>
+                         <span class="cert-skill-tag">Seaborn</span>
+                          <span class="cert-skill-tag">Data Analysis</span>
+                    </div>
+                   <a href="sertifikatudemy.pdf" 
+                        class="cert-link cert-download-btn" 
+                        download="Sertifikat_Udemy_Yunanda.pdf">
+                        <span data-translate="cert-view-btn">Unduh Sertifikat</span>
+                        <span class="cert-link-arrow">→</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- ===== CERT CARD 2 ===== -->
+            <div class="cert-card fade-in" data-category="web"
+                 data-title="Kickstart Your Web Journey: From Development Lifecycle to Coding Basic"
+                 data-issuer="Aksademy"
+                 data-date="2026"
+                 data-images='["sertifikat2a.png","sertifikat2b.png","sertifikat2c.png"]'
+                 data-pdf="sertifikataksademy.pdf"
+                 data-desc="Seminar yang membahas tahapan Software Development Lifecycle (SDLC) untuk memahami proses pengembangan perangkat lunak secara terstruktur, mulai dari perencanaan hingga maintenance. Selain itu, saya mempelajari dasar penggunaan Git dan GitHub untuk mengelola versi kode dan mendukung kolaborasi tim, serta mengenal developer tools seperti VS Code dan Browser DevTools untuk proses coding dan debugging. Pada sesi front-end, dibahas fundamental HTML dan CSS sebagai dasar pembuatan website, serta penggunaan Tailwind CSS untuk menciptakan desain yang modern dan responsif. Tidak hanya teori, seminar ini juga disertai praktik langsung dengan membuat mini project berupa landing page sederhana sebagai penerapan materi yang telah dipelajari.">
+                <div class="cert-thumbnail cert-slideshow">
+                    <div class="slideshow-track">
+                        <img class="slide-img active" src="sertifikat2a.png" alt="Certificate 2-1">
+                        <img class="slide-img" src="sertifikat2b.png" alt="Certificate 2-2">
+                        <img class="slide-img" src="sertifikat2c.png" alt="Certificate 2-3">
+                    </div>
+                    <div class="cert-placeholder" style="display:none;">
+                        <div class="cert-placeholder-icon">🎨</div>
+                        <div class="cert-placeholder-text">Web Development</div>
+                    </div>
+                    <div class="slide-dots"></div>
+                    <div class="cert-thumbnail-overlay">
+                        <span class="cert-view-icon">🔍</span>
+                        <span class="cert-view-label" data-translate="cert-photo-view">Lihat Foto</span>
+                    </div>
+                </div>
+                <span class="cert-badge">2026</span>
+                <div class="cert-body">
+                    <div class="cert-issuer">
+                        <div class="cert-issuer-dot"></div>
+                        <span class="cert-issuer-name">Aksademy</span>
+                    </div>
+                    <h3 class="cert-title">Kickstart Your Web Journey: From Development Lifecycle to Coding Basic</h3>
+                    <div class="cert-meta">
+                        <div class="cert-meta-item">
+                            <span class="cert-meta-icon">📅</span>
+                            <span>7 Feb 2026</span>
+                        </div>
+                        <div class="cert-meta-item">
+                            <span class="cert-meta-icon">🏅</span>
+                            <span data-translate="cert-verified">Terverifikasi</span>
+                        </div>
+                    </div>
+                    <div class="cert-skills">
+                        <span class="cert-skill-tag">SDLC</span>
+                        <span class="cert-skill-tag">Git</span>
+                        <span class="cert-skill-tag">GitHub</span>
+                        <span class="cert-skill-tag">VSCode</span>
+                        <span class="cert-skill-tag">HTML</span>
+                        <span class="cert-skill-tag">CSS</span>
+                    </div>
+                    <a href="sertifikataksademy.pdf" 
+                        class="cert-link cert-download-btn" 
+                        download="Sertifikat_Aksademy_Kickstar_Yunanda.pdf">
+                        <span data-translate="cert-view-btn">Unduh Sertifikat</span>
+                        <span class="cert-link-arrow">→</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- ===== CERT CARD 3 ===== -->
+            <div class="cert-card fade-in" data-category="web"
+                 data-title="Bikin Website Gratis dengan WordPress: Dari Nol Tanpa Coding!"
+                 data-issuer="Aksademy"
+                 data-date="2026"
+                 data-images='["sertifikat3a.png","sertifikat3b.png","sertifikat3c.png"]'
+                 data-pdf="sertifikat3.pdf"
+                 data-desc="Mempelajari dan mempraktekkan tentang pembuatan landing page dengan WordPress menggunakan template yang ada, serta memperlajari tentang Hosting, Domain dan Website">
+                <div class="cert-thumbnail cert-slideshow">
+                    <div class="slideshow-track">
+                        <img class="slide-img active" src="sertifikat3a.png" alt="Certificate 3-1">
+                        <img class="slide-img" src="sertifikat3b.png" alt="Certificate 3-2">
+                        <img class="slide-img" src="sertifikat3c.png" alt="Certificate 3-3">
+                    </div>
+                    <div class="cert-placeholder" style="display:none;">
+                        <div class="cert-placeholder-icon">💻</div>
+                        <div class="cert-placeholder-text">Bikin Website Gratis dengan WordPress: Dari Nol Tanpa Coding!</div>
+                    </div>
+                    <div class="slide-dots"></div>
+                    <div class="cert-thumbnail-overlay">
+                        <span class="cert-view-icon">🔍</span>
+                        <span class="cert-view-label" data-translate="cert-photo-view">Lihat Foto</span>
+                    </div>
+                </div>
+                <span class="cert-badge">2026</span>
+                <div class="cert-body">
+                    <div class="cert-issuer">
+                        <div class="cert-issuer-dot"></div>
+                        <span class="cert-issuer-name">Aksademy</span>
+                    </div>
+                    <h3 class="cert-title">Bikin Website Gratis dengan WordPress: Dari Nol Tanpa Coding!</h3>
+                    <div class="cert-meta">
+                        <div class="cert-meta-item">
+                            <span class="cert-meta-icon">📅</span>
+                            <span>7 Feb 2026</span>
+                        </div>
+                        <div class="cert-meta-item">
+                            <span class="cert-meta-icon">🏅</span>
+                            <span data-translate="cert-verified">Terverifikasi</span>
+                        </div>
+                    </div>
+                    <div class="cert-skills">
+                        <span class="cert-skill-tag">WordPress</span>
+                        <span class="cert-skill-tag">Hosting</span>
+                        <span class="cert-skill-tag">Domain</span>
+                    </div>
+                    <a href="sertifikat3.pdf" 
+                        class="cert-link cert-download-btn" 
+                        download="Web_Development_Fundamentals.pdf">
+                        <span data-translate="cert-view-btn">Unduh Sertifikat</span>
+                        <span class="cert-link-arrow">→</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- ===== CERT CARD 4 ===== -->
+            <div class="cert-card fade-in" data-category="lainnya"
+                 data-title="TOELF"
+                 data-issuer="Brighten English"
+                 data-date="2026"
+                 data-images='["sertifikat4a.png","sertifikat4b.jpg","sertifikat4c.jpeg"]'
+                 data-pdf="sertifikatTOELF.pdf"
+                 data-desc="Mengikuti seminar dan melakukan Test of English as a Foreign Language. TOEFL merupakan tes kemampuan bahasa Inggris yang digunakan untuk mengukur kemampuan seseorang yang bukan penutur asli bahasa Inggris, untuk keperluan studi, beasiswa, atau kerja di luar negeri.">
+                <div class="cert-thumbnail cert-slideshow">
+                    <div class="slideshow-track">
+                        <img class="slide-img active" src="sertifikat4a.png" alt="Certificate 4-1">
+                        <img class="slide-img" src="sertifikat4b.jpg" alt="Certificate 4-2">
+                        <img class="slide-img" src="sertifikat4c.jpeg" alt="Certificate 4-3">
+                    </div>
+                    <div class="cert-placeholder" style="display:none;">
+                        <div class="cert-placeholder-icon">📃</div>
+                        <div class="cert-placeholder-text">TOELF</div>
+                    </div>
+                    <div class="slide-dots"></div>
+                    <div class="cert-thumbnail-overlay">
+                        <span class="cert-view-icon">🔍</span>
+                        <span class="cert-view-label" data-translate="cert-photo-view">Lihat Foto</span>
+                    </div>
+                </div>
+                <span class="cert-badge">2026</span>
+                <div class="cert-body">
+                    <div class="cert-issuer">
+                        <div class="cert-issuer-dot"></div>
+                        <span class="cert-issuer-name">Brighten English</span>
+                    </div>
+                    <h3 class="cert-title">Test of English as a Foreign Language [TOELF]</h3>
+                    <div class="cert-meta">
+                        <div class="cert-meta-item">
+                            <span class="cert-meta-icon">📅</span>
+                            <span>9 Feb 2026</span>
+                        </div>
+                        <div class="cert-meta-item">
+                            <span class="cert-meta-icon">🏅</span>
+                            <span data-translate="cert-verified">Terverifikasi</span>
+                        </div>
+                    </div>
+                    <div class="cert-skills">
+                        <span class="cert-skill-tag">Listening</span>
+                        <span class="cert-skill-tag">Structure</span>
+                        <span class="cert-skill-tag">Reading</span>
+                    </div>
+                    <a href="sertifikatTOELF.pdf" 
+                        class="cert-link cert-download-btn" 
+                        download="Sertifikat_TOELF_Yunanda.pdf">
+                        <span data-translate="cert-view-btn">Unduh Sertifikat</span>
+                        <span class="cert-link-arrow">→</span>
+                    </a>
+                </div>
+            </div>
+
+            <!--====== Sertifikat 5 =======-->
+            <div class="cert-card fade-in" data-category="lainnya"
+                 data-title="Leadership Starts With You - Finding Your Leadership Standing"
+                 data-issuer="Lead Your Ship"
+                 data-date="2026"
+                 data-images='["sertifikatLead.png"]'
+                 data-pdf="sertifikatTOELF.pdf"
+                 data-desc="Seminar leadership yang membahas pentingnya kepemimpinan dalam membangun tim yang solid dan produktif. Dalam seminar tersebut dijelaskan bahwa seorang pemimpin tidak hanya bertugas memberi arahan, tetapi juga mampu menjadi pendengar yang baik, mengambil keputusan secara bijak, serta bertanggung jawab atas setiap hasil yang dicapai tim. Saya juga mempelajari pentingnya komunikasi yang efektif, manajemen waktu, serta kemampuan mengelola konflik dalam lingkungan kerja. Dari seminar ini, saya memahami bahwa leadership bukan hanya tentang jabatan, melainkan tentang sikap, integritas, dan kemampuan memengaruhi orang lain secara positif.">
+                <div class="cert-thumbnail cert-slideshow">
+                    <div class="slideshow-track">
+                        <img class="slide-img active" src="sertifikatLead.png" alt="Certificate 5-1">
+                    </div>
+                    <div class="cert-placeholder" style="display:none;">
+                        <div class="cert-placeholder-icon">📃</div>
+                        <div class="cert-placeholder-text">TOELF</div>
+                    </div>
+                    <div class="slide-dots"></div>
+                    <div class="cert-thumbnail-overlay">
+                        <span class="cert-view-icon">🔍</span>
+                        <span class="cert-view-label" data-translate="cert-photo-view">Lihat Foto</span>
+                    </div>
+                </div>
+                <span class="cert-badge">2026</span>
+                <div class="cert-body">
+                    <div class="cert-issuer">
+                        <div class="cert-issuer-dot"></div>
+                        <span class="cert-issuer-name">Lead Your Ship</span>
+                    </div>
+                    <h3 class="cert-title">Leadership Starts With You - Finding Your Leadership Standing</h3>
+                    <div class="cert-meta">
+                        <div class="cert-meta-item">
+                            <span class="cert-meta-icon">📅</span>
+                            <span>8 Feb 2026</span>
+                        </div>
+                        <div class="cert-meta-item">
+                            <span class="cert-meta-icon">🏅</span>
+                            <span data-translate="cert-verified">Terverifikasi</span>
+                        </div>
+                    </div>
+                    <div class="cert-skills">
+                        <span class="cert-skill-tag">Leadership</span>
+                        <span class="cert-skill-tag">SDM</span>
+                        <span class="cert-skill-tag">Problem Solving</span>
+                        <span class="cert-skill-tag">integritas</span>
+                        <span class="cert-skill-tag">Komunikasi</span>
+                    </div>
+                    <a href="sertifikatLead.png" 
+                        class="cert-link cert-download-btn" 
+                        download="Sertifikat_Lead_Yunanda.pdf">
+                        <span data-translate="cert-view-btn">Unduh Sertifikat</span>
+                        <span class="cert-link-arrow">→</span>
+                    </a>
+                </div>
+            </div>
+            <!--====== Sertifikat 6 =======-->
+            <div class="cert-card fade-in" data-category="lainnya"
+                 data-title="The 6th National Busness Legal Talk 2026"
+                 data-issuer="Universitas Sebelas Maret"
+                 data-date="2026"
+                 data-images='["sertifikatNBLT.jpeg,"sertifikat6b.png","sertifikat6c.jpeg"]'
+                 data-pdf="sertifikatNBLT.pdf"
+                 data-desc="Seminar leadership yang membahas pentingnya kepemimpinan dalam membangun tim yang solid dan produktif. Dalam seminar tersebut dijelaskan bahwa seorang pemimpin tidak hanya bertugas memberi arahan, tetapi juga mampu menjadi pendengar yang baik, mengambil keputusan secara bijak, serta bertanggung jawab atas setiap hasil yang dicapai tim. Saya juga mempelajari pentingnya komunikasi yang efektif, manajemen waktu, serta kemampuan mengelola konflik dalam lingkungan kerja. Dari seminar ini, saya memahami bahwa leadership bukan hanya tentang jabatan, melainkan tentang sikap, integritas, dan kemampuan memengaruhi orang lain secara positif.">
+                <div class="cert-thumbnail cert-slideshow">
+                    <div class="slideshow-track">
+                        <img class="slide-img active" src="sertifikatNBLT.jpeg" alt="Certificate 6-1">
+                        <img class="slide-img" src="sertifikat6b.png" alt="Certificate 6-2">
+                        <img class="slide-img" src="sertifikat6c.jpeg" alt="Certificate 6-3">
+                    </div>
+                    <div class="cert-placeholder" style="display:none;">
+                        <div class="cert-placeholder-icon">📃</div>
+                        <div class="cert-placeholder-text">The 6th National Busness Legal Talk 2026</div>
+                    </div>
+                    <div class="slide-dots"></div>
+                    <div class="cert-thumbnail-overlay">
+                        <span class="cert-view-icon">🔍</span>
+                        <span class="cert-view-label" data-translate="cert-photo-view">Lihat Foto</span>
+                    </div>
+                </div>
+                <span class="cert-badge">2026</span>
+                <div class="cert-body">
+                    <div class="cert-issuer">
+                        <div class="cert-issuer-dot"></div>
+                        <span class="cert-issuer-name">Universitas 11 Maret</span>
+                    </div>
+                    <h3 class="cert-title">The 6th National Busness Legal Talk 2026</h3>
+                    <div class="cert-meta">
+                        <div class="cert-meta-item">
+                            <span class="cert-meta-icon">📅</span>
+                            <span>6 Feb 2026</span>
+                        </div>
+                        <div class="cert-meta-item">
+                            <span class="cert-meta-icon">🏅</span>
+                            <span data-translate="cert-verified">Terverifikasi</span>
+                        </div>
+                    </div>
+                    <div class="cert-skills">
+                        <span class="cert-skill-tag">Leadership</span>
+                        <span class="cert-skill-tag">SDM</span>
+                        <span class="cert-skill-tag">Problem Solving</span>
+                        <span class="cert-skill-tag">integritas</span>
+                        <span class="cert-skill-tag">Komunikasi</span>
+                    </div>
+                    <a href="sertifikatNBLT.jpeg" 
+                        class="cert-link cert-download-btn" 
+                        download="Sertifikat_NBLT_Yunanda.pdf">
+                        <span data-translate="cert-view-btn">Unduh Sertifikat</span>
+                        <span class="cert-link-arrow">→</span>
+                    </a>
+                </div>
+            </div>
+            <!--====== Sertifikat 7 =======-->
+            <div class="cert-card fade-in" data-category="lainnya"
+                 data-title="Intensive Bootcamp 2 Weeks - Microsoft Excel"
+                 data-issuer="Karirnex"
+                 data-date="2026"
+                 data-images='["sertifikat7a.png,"sertifikat7b.png","sertifikat7c.png"]'
+                 data-pdf="sertifikatExcel.pdf"
+                 data-desc="Seminar leadership yang membahas pentingnya kepemimpinan dalam membangun tim yang solid dan produktif. Dalam seminar tersebut dijelaskan bahwa seorang pemimpin tidak hanya bertugas memberi arahan, tetapi juga mampu menjadi pendengar yang baik, mengambil keputusan secara bijak, serta bertanggung jawab atas setiap hasil yang dicapai tim. Saya juga mempelajari pentingnya komunikasi yang efektif, manajemen waktu, serta kemampuan mengelola konflik dalam lingkungan kerja. Dari seminar ini, saya memahami bahwa leadership bukan hanya tentang jabatan, melainkan tentang sikap, integritas, dan kemampuan memengaruhi orang lain secara positif.">
+                <div class="cert-thumbnail cert-slideshow">
+                    <div class="slideshow-track">
+                        <img class="slide-img active" src="sertifikat7a.png" alt="Certificate 7-1">
+                        <img class="slide-img" src="sertifikat7b.png" alt="Certificate 7-2">
+                        <img class="slide-img" src="sertifikat7c.png" alt="Certificate 7-3">
+                    </div>
+                    <div class="cert-placeholder" style="display:none;">
+                        <div class="cert-placeholder-icon">📃</div>
+                        <div class="cert-placeholder-text">Intensive Bootcamp 2 Weeks - Microsoft Excel</div>
+                    </div>
+                    <div class="slide-dots"></div>
+                    <div class="cert-thumbnail-overlay">
+                        <span class="cert-view-icon">🔍</span>
+                        <span class="cert-view-label" data-translate="cert-photo-view">Lihat Foto</span>
+                    </div>
+                </div>
+                <span class="cert-badge">2026</span>
+                <div class="cert-body">
+                    <div class="cert-issuer">
+                        <div class="cert-issuer-dot"></div>
+                        <span class="cert-issuer-name">Karirnex</span>
+                    </div>
+                    <h3 class="cert-title">Intensive Bootcamp 2 Weeks - Microsoft Excel</h3>
+                    <div class="cert-meta">
+                        <div class="cert-meta-item">
+                            <span class="cert-meta-icon">📅</span>
+                            <span>16 Feb 2026</span>
+                        </div>
+                        <div class="cert-meta-item">
+                            <span class="cert-meta-icon">🏅</span>
+                            <span data-translate="cert-verified">Terverifikasi</span>
+                        </div>
+                    </div>
+                    <div class="cert-skills">
+                        <span class="cert-skill-tag">Ms.Excel</span>
+                        <span class="cert-skill-tag">Data Analysis</span>
+                        <span class="cert-skill-tag">Data Cleaning</span>
+                        <span class="cert-skill-tag">Pivot Table</span>
+                    </div>
+                    <a href="sertifikatExcel.pdf" 
+                        class="cert-link cert-download-btn" 
+                        download="Sertifikat_Excel_Yunanda.pdf">
+                        <span data-translate="cert-view-btn">Unduh Sertifikat</span>
+                        <span class="cert-link-arrow">→</span>
+                    </a>
+                </div>
+            </div>
+        </div><!-- end .certificates-grid -->
+    </div><!-- end .sertifikat-content-wrap -->
+</section>
+
     <!-- ========== KONTAK SECTION ========== -->
     <section id="kontak">
         <div class="floating-confetti">
@@ -1787,6 +3190,14 @@
                 </p>
                 
                 <div class="contact-details">
+                    <div class="contact-item">
+                     <div class="contact-item-icon">💬</div>
+                    <div>
+                        <strong>Whatsapp</strong><br>
+                        <a href="https://wa.me/62895330054881">Whatsapp</a>
+                        </a>
+                    </div>
+                    </div>
                     <div class="contact-item">
                         <div class="contact-item-icon">📧</div>
                         <div>
@@ -1859,6 +3270,22 @@
         </div>
     </div>
 
+    <!-- ========== LIGHTBOX MODAL ========== -->
+<div class="cert-lightbox" id="certLightbox">
+    <button class="cert-lightbox-close" id="certLightboxClose">✕</button>
+    <div class="cert-lightbox-inner">
+        <img src="" alt="" class="cert-lightbox-img" id="certLightboxImg">
+        <div class="cert-lightbox-body">
+            <div class="cert-issuer" style="margin-bottom:0.6rem;">
+                <div class="cert-issuer-dot"></div>
+                <span class="cert-issuer-name" id="certLightboxIssuer"></span>
+            </div>
+            <h3 class="cert-title" id="certLightboxTitle" style="font-size:1.5rem; margin-bottom:1rem;"></h3>
+            <p style="color: var(--gray-dark); line-height:1.8;" id="certLightboxDesc"></p>
+        </div>
+    </div>
+</div>
+
     
     <!-- ========== JAVASCRIPT ========== -->
     <script>
@@ -1870,10 +3297,11 @@ const translations = {
         'nav-home': 'Home',
         'nav-about': 'Tentang Saya',
         'nav-projects': 'Proyek',
+        'nav-sertifikat': 'Sertifikat',
         'nav-contact': 'Kontak',
         
         // Hero Section
-        'hero-title': 'Halo, Saya Yunanda',
+        'hero-title': 'Yunanda Vira Gayatri',
         'hero-subtitle': 'Mahasiswa Sistem Informasi & Aspiring Web Developer',
         'hero-description': 'Sebagai mahasiswa Sistem Informasi di Universitas Bina Sarana Informatika, saya bersemangat mengembangkan kemampuan dalam desain dan pengembangan web. Saya berkomitmen untuk belajar menciptakan solusi digital yang fungsional dan menarik.',
         'hero-cta': 'Lihat Proyek Saya',
@@ -1912,7 +3340,21 @@ const translations = {
         'project4-desc': 'Website perusahaan ini dirancang dan dikembangkan secara mandiri oleh saya sebagai media digital untuk memperkenalkan Jaya Mandiri Glass. Situs ini menampilkan katalog produk kaca dengan tampilan modern, responsif, serta animasi yang halus, guna menghadirkan pengalaman pengguna yang elegan dan informatif.',
         'btn-demo': 'Demo',
         'btn-play' : 'Play',
-        
+
+        // Sertifikat Section
+        'nav-certificates': 'Sertifikat',
+        'cert-title': 'Sertifikat Saya',
+        'cert-subtitle': 'Pencapaian & Penghargaan yang Saya Raih',
+        'cert-stat-total': 'Total Sertifikat',
+        'cert-stat-platform': 'Platform',
+        'cert-stat-year': 'Tahun Terkini',
+        'cert-filter-all': 'Semua',
+        'cert-filter-web': 'Web Development',
+        'cert-filter-design': 'Data Analisis',
+        'cert-filter-other': 'Lainnya',
+        'cert-verified': 'Terverifikasi',
+        'cert-view-btn': 'Lihat Sertifikat',
+
         // Contact Section
         'contact-title': 'Hubungi Saya',
         'contact-subtitle': 'Mari bekerja sama mewujudkan proyek Anda',
@@ -1938,10 +3380,11 @@ const translations = {
         'nav-home': 'Home',
         'nav-about': 'About Me',
         'nav-projects': 'Projects',
+        'nav-sertifikat': 'Sertifikat',
         'nav-contact': 'Contact',
         
         // Hero Section
-        'hero-title': 'Hello, I\'m Yunanda',
+        'hero-title': 'Yunanda Vira Gayatri',
         'hero-subtitle': 'Information Systems Student & Aspiring Web Developer',
         'hero-description': 'As an Information Systems student at Bina Sarana Informatika University, I am passionate about developing skills in web design and development. I am committed to learning how to create digital solutions that are both functional and engaging.',
         'hero-cta': 'View My Projects',
@@ -1980,6 +3423,20 @@ const translations = {
         'project4-desc': 'This company website was independently designed and developed by me as a digital platform to introduce Jaya Mandiri Glass. The site showcases a catalog of glass products with a modern and responsive design, featuring smooth animations to deliver an elegant and informative user experience.',
         'btn-demo': 'Demo',
         'btn-play' : 'play',
+
+        // Projects Section
+        'nav-certificates': 'Certificates',
+        'cert-title': 'My Certificates',
+        'cert-subtitle': 'Achievements & Awards I Have Earned',
+        'cert-stat-total': 'Total Certificates',
+        'cert-stat-platform': 'Platforms',
+        'cert-stat-year': 'Latest Year',
+        'cert-filter-all': 'All',
+        'cert-filter-web': 'Web Development',
+        'cert-filter-design': 'Data Analysis',
+        'cert-filter-other': 'Others',
+        'cert-verified': 'Verified',
+        'cert-view-btn': 'View Certificate',
 
         // Contact Section
         'contact-title': 'Contact Me',
@@ -2203,6 +3660,339 @@ const translations = {
                 closeTutorialOverlay();
             }
         });
+
+        
+// ========== CERTIFICATE FILTER ==========
+document.querySelectorAll('.cert-filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        // Update active button
+        document.querySelectorAll('.cert-filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        const filter = btn.getAttribute('data-filter');
+
+        document.querySelectorAll('.cert-card').forEach(card => {
+            const category = card.getAttribute('data-category');
+            const show = filter === 'all' || category === filter;
+
+            if (show) {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px) scale(0.95)';
+                card.style.display = 'block';
+                // Trigger reflow then animate in
+                requestAnimationFrame(() => {
+                    card.style.transition = 'opacity 0.4s ease, transform 0.4s cubic-bezier(0.34,1.56,0.64,1)';
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0) scale(1)';
+                });
+            } else {
+                card.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(10px) scale(0.95)';
+                setTimeout(() => { card.style.display = 'none'; }, 300);
+            }
+        });
+    });
+});
+
+// ========== CERTIFICATE LIGHTBOX ==========
+const certLightbox = document.getElementById('certLightbox');
+const certLightboxClose = document.getElementById('certLightboxClose');
+const certLightboxImg = document.getElementById('certLightboxImg');
+const certLightboxTitle = document.getElementById('certLightboxTitle');
+const certLightboxIssuer = document.getElementById('certLightboxIssuer');
+const certLightboxDesc = document.getElementById('certLightboxDesc');
+
+document.querySelectorAll('.cert-card').forEach(card => {
+    card.addEventListener('click', (e) => {
+        // Jangan buka lightbox jika klik pada link
+        if (e.target.closest('.cert-link')) return;
+
+        const img = card.getAttribute('data-img');
+        const title = card.getAttribute('data-title');
+        const issuer = card.getAttribute('data-issuer');
+        const desc = card.getAttribute('data-desc');
+
+        certLightboxImg.src = img || '';
+        certLightboxImg.alt = title || '';
+        certLightboxTitle.textContent = title || '';
+        certLightboxIssuer.textContent = issuer || '';
+        certLightboxDesc.textContent = desc || '';
+
+        certLightbox.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    });
+});
+
+function closeLightbox() {
+    certLightbox.classList.remove('active');
+    document.body.style.overflow = '';
+}
+
+certLightboxClose.addEventListener('click', closeLightbox);
+
+certLightbox.addEventListener('click', (e) => {
+    if (e.target === certLightbox) closeLightbox();
+});
+
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && certLightbox.classList.contains('active')) {
+        closeLightbox();
+    }
+});
+
+// ========== FIX: Placeholder jika gambar gagal load ==========
+document.querySelectorAll('.cert-thumbnail img').forEach(img => {
+    img.addEventListener('error', () => {
+        img.style.display = 'none';
+        const placeholder = img.parentElement.querySelector('.cert-placeholder');
+        if (placeholder) placeholder.style.display = 'flex';
+    });
+});
+
+// ========== Animated counter untuk stats ==========
+function animateCounter(el, target, duration = 1500) {
+    let start = 0;
+    const increment = target / (duration / 16);
+    const timer = setInterval(() => {
+        start += increment;
+        if (start >= target) {
+            el.textContent = target;
+            clearInterval(timer);
+        } else {
+            el.textContent = Math.floor(start);
+        }
+    }, 16);
+}
+
+// Jalankan counter saat section masuk viewport
+const certStatsSection = document.querySelector('.cert-stats');
+if (certStatsSection) {
+    const statsObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                document.querySelectorAll('.cert-stat-number').forEach(el => {
+                    const val = parseInt(el.textContent);
+                    if (!isNaN(val) && val > 1) {
+                        animateCounter(el, val);
+                    }
+                });
+                statsObserver.disconnect();
+            }
+        });
+    }, { threshold: 0.3 });
+    statsObserver.observe(certStatsSection);
+}
+
+
+// ========== SLIDESHOW OTOMATIS PER CARD (ganti tiap 2 detik) ==========
+(function initSlideshows() {
+    document.querySelectorAll('.cert-slideshow').forEach(slideshow => {
+        const slides      = Array.from(slideshow.querySelectorAll('.slide-img'));
+        const dotsWrapper = slideshow.querySelector('.slide-dots');
+        if (!slides.length) return;
+
+        // Cek apakah ada gambar yang berhasil load
+        let anyLoaded = false;
+        slides.forEach(img => {
+            img.addEventListener('load', () => { anyLoaded = true; });
+        });
+
+        // Buat dots
+        const dots = slides.map((_, i) => {
+            const d = document.createElement('div');
+            d.className = 'slide-dot' + (i === 0 ? ' active' : '');
+            d.addEventListener('click', (e) => {
+                e.stopPropagation();
+                goTo(i);
+                resetTimer();
+            });
+            dotsWrapper.appendChild(d);
+            return d;
+        });
+
+        // Buat progress bar
+        const progress = document.createElement('div');
+        progress.className = 'slide-progress';
+        slideshow.appendChild(progress);
+
+        let current = 0;
+        let timer   = null;
+
+        function goTo(index) {
+            slides[current].classList.remove('active');
+            dots[current].classList.remove('active');
+            current = (index + slides.length) % slides.length;
+            slides[current].classList.add('active');
+            dots[current].classList.add('active');
+
+            // Reset & restart progress bar animasi
+            progress.classList.remove('running');
+            progress.style.width = '0%';
+            void progress.offsetWidth; // force reflow
+            progress.classList.add('running');
+        }
+
+        function next() { goTo(current + 1); }
+
+        function startTimer() {
+            timer = setInterval(next, 2000);
+        }
+
+        function resetTimer() {
+            clearInterval(timer);
+            startTimer();
+        }
+
+        // Handle error gambar → placeholder
+        let failCount = 0;
+        slides.forEach(img => {
+            img.addEventListener('error', () => {
+                img.style.display = 'none';
+                failCount++;
+                if (failCount === slides.length) {
+                    const ph = slideshow.querySelector('.cert-placeholder');
+                    if (ph) ph.style.display = 'flex';
+                    dotsWrapper.style.display = 'none';
+                    progress.style.display = 'none';
+                }
+            });
+        });
+
+        // Mulai slideshow
+        goTo(0);
+        startTimer();
+
+        // Pause saat hover (UX lebih nyaman)
+        slideshow.addEventListener('mouseenter', () => clearInterval(timer));
+        slideshow.addEventListener('mouseleave', () => { clearInterval(timer); startTimer(); });
+    });
+})();
+const card = document.getElementById('photoCard');
+const shine = document.getElementById('holoShine');
+const gloss = document.getElementById('holoGloss');
+
+// Nilai target & nilai saat ini (untuk lerp)
+let targetX = 0, targetY = 0;
+let currentX = 0, currentY = 0;
+let isHovered = false;
+let rafId = null;
+
+// Lerp function - ini kunci smooth-nya
+function lerp(start, end, t) {
+    return start + (end - start) * t;
+}
+
+function animate() {
+    // Smooth interpolation - semakin kecil angka 0.08, semakin lambat & smooth
+    currentX = lerp(currentX, targetX, 0.08);
+    currentY = lerp(currentY, targetY, 0.08);
+
+    card.style.transform = `perspective(1200px) rotateX(${currentX}deg) rotateY(${currentY}deg) scale(${isHovered ? 1.04 : 1})`;
+
+    // Shadow dinamis
+    const shadowX = -currentY * 2;
+    const shadowY = currentX * 2;
+    card.style.boxShadow = isHovered
+        ? `${shadowX}px ${shadowY + 30}px 80px rgba(255, 100, 180, 0.45), 0 10px 30px rgba(255, 182, 193, 0.3)`
+        : '0 20px 60px rgba(255, 182, 193, 0.3)';
+
+    rafId = requestAnimationFrame(animate);
+}
+
+animate(); // mulai loop
+
+card.addEventListener('mousemove', (e) => {
+    const rect = card.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const cx = rect.width / 2;
+    const cy = rect.height / 2;
+
+    targetY = ((x - cx) / cx) * 18;
+    targetX = -((y - cy) / cy) * 12;
+
+    // Hologram: warna bergerak ikut kursor
+    const pctX = (x / rect.width) * 100;
+    const pctY = (y / rect.height) * 100;
+
+    // Hue berubah tergantung posisi kursor
+    const hue1 = pctX * 2.5;        // 0 - 250
+    const hue2 = hue1 + 60;
+    const hue3 = hue1 + 120;
+    const hue4 = hue1 + 180;
+
+    shine.style.background = `
+        radial-gradient(ellipse at ${pctX}% ${pctY}%, 
+            hsla(${hue1}, 100%, 70%, 0.55) 0%, 
+            hsla(${hue2}, 100%, 65%, 0.35) 25%, 
+            hsla(${hue3}, 100%, 60%, 0.2) 50%, 
+            hsla(${hue4}, 100%, 55%, 0.1) 70%,
+            transparent 100%
+        ),
+        repeating-linear-gradient(
+            ${pctX * 1.8}deg,
+            rgba(255,255,255,0.04) 0px,
+            rgba(255,200,100,0.05) 3px,
+            rgba(100,255,200,0.04) 6px,
+            rgba(200,100,255,0.05) 9px
+        )
+    `;
+
+    // Gloss ikut sudut tilt
+    gloss.style.background = `linear-gradient(
+        ${135 + currentY * 2}deg,
+        rgba(255,255,255,0.2) 0%,
+        transparent 40%,
+        rgba(255,255,255,0.07) 100%
+    )`;
+});
+
+card.addEventListener('mouseenter', () => {
+    isHovered = true;
+});
+
+card.addEventListener('mouseleave', () => {
+    isHovered = false;
+    targetX = 0;
+    targetY = 0;
+    shine.style.background = '';
+});
+
+// Touch support
+card.addEventListener('touchmove', (e) => {
+    e.preventDefault();
+    const touch = e.touches[0];
+    const rect = card.getBoundingClientRect();
+    const x = touch.clientX - rect.left;
+    const y = touch.clientY - rect.top;
+    const cx = rect.width / 2;
+    const cy = rect.height / 2;
+
+    targetY = ((x - cx) / cx) * 18;
+    targetX = -((y - cy) / cy) * 12;
+    isHovered = true;
+
+    const pctX = (x / rect.width) * 100;
+    const pctY = (y / rect.height) * 100;
+    const hue1 = pctX * 2.5;
+
+    shine.style.background = `
+        radial-gradient(ellipse at ${pctX}% ${pctY}%, 
+            hsla(${hue1}, 100%, 70%, 0.55) 0%, 
+            hsla(${hue1 + 60}, 100%, 65%, 0.35) 25%, 
+            hsla(${hue1 + 120}, 100%, 60%, 0.2) 50%,
+            transparent 100%
+        )
+    `;
+}, { passive: false });
+
+card.addEventListener('touchend', () => {
+    isHovered = false;
+    targetX = 0;
+    targetY = 0;
+    shine.style.background = '';
+});
     </script>
 </body>
 </html>
